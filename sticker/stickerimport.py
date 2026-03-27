@@ -21,6 +21,7 @@ import json
 import re
 
 from telethon import TelegramClient
+from telethon.network.connection.tcpabridged import ConnectionTcpAbridged  # <- добавьте эту строку
 from telethon.tl.functions.messages import GetAllStickersRequest, GetStickerSetRequest
 from telethon.tl.types.messages import AllStickers
 from telethon.tl.types import InputStickerSetShortName, Document, DocumentAttributeSticker
@@ -131,7 +132,21 @@ parser.add_argument("pack", help="Sticker pack URLs to import", action="append",
 
 async def main(args: argparse.Namespace) -> None:
     await matrix.load_config(args.config)
-    client = TelegramClient(args.session, 298751, "cb676d6bae20553c9996996a8f52b4d7")
+    proxy = {
+        'proxy_type': 'http',
+        'addr': 'xx.yy.yy.xx',  # замените на реальный IP вашего VPS
+        'port': 1080,
+        'username': 'user',
+        'password': 'pass'
+    }
+    client = TelegramClient(
+        args.session,
+        298751,
+        "cb676d6bae20553c9996996a8f52b4d7",
+        proxy=proxy,
+        connection=ConnectionTcpAbridged
+    )
+#     client = TelegramClient(args.session, 298751, "cb676d6bae20553c9996996a8f52b4d7")
     await client.start()
 
     if args.list:
